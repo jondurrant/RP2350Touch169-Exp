@@ -1,0 +1,9 @@
+[submodule "lib/lvgl"]
+	path = lib/lvgl
+	url = https://github.com/lvgl/lvgl
+[submodule "lib/tiny-json"]
+	path = lib/tiny-json
+	url = https://github.com/rafagafe/tiny-json
+[submodule "lib/json-maker"]
+	path = lib/json-maker
+	url = https://github.com/rafagafe/json-maker
