@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "json-maker/json-maker.h"
+#include "TwinProtocol.h"
 
 #define BAT1CPUSLOT 1
 #define BAT2CPUSLOT 2
@@ -280,80 +281,87 @@ char* PowerState::jsonChargeAvl(char *buf, unsigned int len){
 void PowerState::updateFromJson(json_t const *j){
 	json_t const* item;
 
-	item = json_getProperty( j, STATEHEADER );
-	if ( item == NULL){
-		printf("No %s header\n", STATEHEADER);
-		return;
+	//Look for header of "state" or "delta"
+	json_t const* json = json_getProperty( j, TWINSTATE );
+	if ( json != NULL){
+		if (JSON_OBJ !=  json_getType( json )){
+			printf("Header is not an object\n");
+			return;
+		}
+	} else {
+		json = json_getProperty( j, TWINDELTA );
+		if ( json != NULL){
+			if (JSON_OBJ !=  json_getType( json )){
+				printf("Header is not an object\n");
+				return;
+			}
+		} else {
+			json = j;
+		}
 	}
-	if (JSON_OBJ !=  json_getType( item )){
-		printf("Header is not an object\n");
-		return;
-	}
-	json_t const* json =  json_getSibling( item );
 
 
 	item = json_getProperty( json, STATEBAT1CPU );
 	if ( item != NULL && JSON_BOOLEAN == json_getType( item ) ) {
-		printf("Set item\n");
 		setBat1CPU(json_getBoolean(item));
 	}
 	item = json_getProperty( json, STATEBAT2CPU );
-	if ( item && JSON_BOOLEAN == json_getType( item ) ) {
+	if ( item != NULL && JSON_BOOLEAN == json_getType( item ) ) {
 		setBat2CPU(json_getBoolean(item));
 	}
 
 	item = json_getProperty( json, STATEBAT1DRIVE );
-	if ( item && JSON_BOOLEAN == json_getType( item ) ) {
+	if ( item != NULL && JSON_BOOLEAN == json_getType( item ) ) {
 		setBat1Drive(json_getBoolean(item));
 	}
 	item = json_getProperty( json, STATEBAT2DRIVE );
-	if ( item && JSON_BOOLEAN == json_getType( item ) ) {
+	if ( item != NULL && JSON_BOOLEAN == json_getType( item ) ) {
 		setBat2Drive(json_getBoolean(item));
 	}
 
 	item = json_getProperty( json, STATEBAT1CHARGE );
-	if ( item && JSON_BOOLEAN == json_getType( item ) ) {
+	if ( item != NULL && JSON_BOOLEAN == json_getType( item ) ) {
 		setBat1Charge(json_getBoolean(item));
 	}
 	item = json_getProperty( json, STATEBAT2CHARGE );
-	if ( item && JSON_BOOLEAN == json_getType( item ) ) {
+	if ( item != NULL && JSON_BOOLEAN == json_getType( item ) ) {
 		setBat2Charge(json_getBoolean(item));
 	}
 
 	item = json_getProperty( json, STATECHGAVL );
-	if ( item && JSON_BOOLEAN == json_getType( item ) ) {
+	if ( item != NULL && JSON_BOOLEAN == json_getType( item ) ) {
 		setChargeAvl(json_getBoolean(item));
 	}
 
 	item = json_getProperty( json, STATEBAT1VOLT );
-	if ( item && JSON_REAL == json_getType( item ) ) {
+	if ( item != NULL && JSON_REAL == json_getType( item ) ) {
 		setBat1Volt(json_getReal(item));
 	}
 	item = json_getProperty( json, STATEBAT2VOLT );
-	if ( item && JSON_REAL == json_getType( item ) ) {
+	if ( item != NULL && JSON_REAL == json_getType( item ) ) {
 		setBat2Volt(json_getReal(item));
 	}
 
 	item = json_getProperty( json, STATEBAT1PER );
-	if ( item && JSON_REAL == json_getType( item ) ) {
+	if ( item != NULL && JSON_REAL == json_getType( item ) ) {
 		setBat1Per(json_getReal(item));
 	}
 	item = json_getProperty( json, STATEBAT2PER );
-	if ( item && JSON_REAL == json_getType( item ) ) {
+	if ( item != NULL && JSON_REAL == json_getType( item ) ) {
 		setBat2Per(json_getReal(item));
 	}
 
 	item = json_getProperty( json, STATECHARGEVOLT );
-	if ( item && JSON_REAL == json_getType( item ) ) {
+	if ( item != NULL && JSON_REAL == json_getType( item ) ) {
 		setChgVolt(json_getReal(item));
 	}
 
 	item = json_getProperty( json, STATECHARGETIME );
-	if ( item && JSON_INTEGER == json_getType( item ) ) {
+	if ( item != NULL && JSON_INTEGER == json_getType( item ) ) {
 		setChgTime(json_getInteger(item));
 	}
 	item = json_getProperty( json, STATECHARGEREMAIN );
-	if ( item && JSON_INTEGER == json_getType( item ) ) {
+	if ( item != NULL && JSON_INTEGER == json_getType( item ) ) {
 		setChgRemain(json_getInteger(item));
 	}
 

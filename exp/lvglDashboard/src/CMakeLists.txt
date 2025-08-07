@@ -1,7 +1,6 @@
 
 add_executable(${NAME}
         main.cpp
-        lvgl_board.c
         Widgets.cpp
         
         State.cpp
